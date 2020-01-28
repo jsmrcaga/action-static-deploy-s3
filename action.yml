@@ -1,4 +1,4 @@
-name: 'Static AWS S3 Deploy'
+name: 'React App - AWS S3 Deploy'
 author: 'Jo Colina'
 description: 'Deploy a static website to an existing or new S3 bucket'
 
