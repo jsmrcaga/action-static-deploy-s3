@@ -26,12 +26,22 @@ then
 	echo "Setting bucket $BUCKET_NAME configuration to WEBSITE..."
 	aws s3 website s3://$BUCKET_NAME $INPUT_AWS_WEBSITE_ARGS --index-document index.html --error-document index.html
 
-	echo "Setting up bucket redirection policy for serving index.html and static/ files..."
-	aws s3api put-bucket-website --bucket $BUCKET_NAME --website-configuration file://aws-policies/redirection-policy.json
-
 	echo "Setting up bucket public access policy"
-	sed "s/{REPLACE-ME}/$BUCKET_NAME/g" ./aws-policies/bucket-policy-template.json > ./aws-policies/bucket-policy.json
+	sed "s/{BUCKET_NAME}/$BUCKET_NAME/g" ./aws-policies/bucket-policy-template.json > ./aws-policies/bucket-policy.json
 	aws s3api put-bucket-policy --bucket $BUCKET_NAME --policy file://aws-policies/bucket-policy.json
+
+	echo "Setting up cloudfront distribution"
+	caller_reference=$(date +%s)
+	sed "s/{BUKET_NAME}/$BUCKET_NAME/g" ./aws-policies/cloudfront-distribution-template.json > ./aws-policies/cloudfront-distribution-template-bucket.json
+	sed "s/{CALLER_REFERENCE}/$caller_reference/g" ./aws-policies/cloudfront-distribution-template-bucket.json > ./aws-policies/cloudfront-distribution.json
+	distribution_result=`aws cloudfront create-distribution --distribution-config file://aws-policies/cloudfront-distribution.json`
+	cloudfront_domain=`distribution_result | jq '.Distribution.DomainName'`
+	cloudfront_location=`distribution_result | jq '.Location'`
+
+	echo "Your new cloudfront distribution can be found at:"
+	echo $cloudfront_location
+	echo "You will be able to access your website at:"
+	echo $cloudfront_domain
 
 else
 	echo "Bucket $BUCKET_NAME already exists, ignoring creation."
