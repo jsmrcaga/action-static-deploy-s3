@@ -1,0 +1,20 @@
+name: 'Static deploy example'
+
+on:
+  release:
+    types: ['published']
+
+jobs:
+  deploy_to_s3:
+    name: 'Deploy the example to S3'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./
+        with:
+          AWS_S3_BUCKET_NAME: 'gh-action-deploy-s3-example'
+          SITE_DIRECTORY: './example'
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          
