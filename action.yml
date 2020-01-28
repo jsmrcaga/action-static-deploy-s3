@@ -1,0 +1,50 @@
+name: 'Static AWS S3 Deploy'
+author: 'Jo Colina'
+description: 'Deploy a static website to an existing or new S3 bucket'
+
+inputs:
+  AWS_S3_REGION:
+    description: 'The region where your bucket should be created'
+    required: false
+    default: 'eu-west-1'
+
+  AWS_S3_BUCKET_NAME:
+    description: 'The name of the bucket to use'
+    required: true
+    default: ''
+
+  SITE_DIRECTORY:
+    description: 'The directory where your static files are located'
+    required: true
+    default: './'
+
+  AWS_SECRET_KEY:
+    description: 'Your AWS secert'
+    required: true
+
+  AWS_ACCESS_KEY_ID:
+    description: 'Your AWS access key ID'
+    required: true
+
+  AWS_CREATE_ARGS:
+    description: 'Extra arguments for the create-bucket command'
+    required: false
+    default: ''
+
+  AWS_WEBSITE_ARGS:
+    description: 'Extra arguments for the website command'
+    required: false
+    default: ''
+
+  AWS_SYNC_ARGS:
+    description: 'Extra arguments for the sync command'
+    required: false
+    default: ''
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+
+branding:
+  icon: box
+  color: orange
